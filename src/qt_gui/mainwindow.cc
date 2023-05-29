@@ -47,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     h_menu->addAction("About", this, &MainWindow::about);
     h_menu->addAction("About &Qt", qApp, &QApplication::aboutQt);
 
-    statusBar()->showMessage(QStringLiteral("Errors: 0"));
-    connect(text, &PracticeArea::errors_updated, [this]() {
+    this->statusBar()->showMessage("Good luck!");
+    connect(text, &PracticeArea::cpm_updated, [this]() {
         this->statusBar()->showMessage(
-                QStringLiteral("Errors %1").arg(text->get_errors()));
+                QStringLiteral("CPM %2").arg(60000 / text->get_avg()));
     });
 }
 

@@ -155,10 +155,11 @@ void ProbabilityMatrix::update_element(char const predecessor,
 
         // if the CharPair average is below global average count as wrong
         // even if it was correct
-        if (correct && (average_typing_time < chp.typing_time))
+        if (correct && (average_typing_time <= char_time * 1.5)) {
             chp.correct += 1;
-        else
+        } else {
             chp.wrong += 1;
+        }
 
         double const total = chp.correct + chp.wrong;
         // frequency is used to account for how frequent is the pair
@@ -205,7 +206,7 @@ QString ProbabilityMatrix::generate_sentence(int word_size) {
 }
 
 // how close are we to 1 i.e. whole matrix is perfect? albeit this is
-// impossible wih time pressure
+// impossible with time pressure
 double ProbabilityMatrix::proficiency() {
     double sum = 0;
     for (auto &&row : data)
@@ -215,6 +216,7 @@ double ProbabilityMatrix::proficiency() {
 }
 
 QString ProbabilityMatrix::get_characters() { return characters; }
+long ProbabilityMatrix::get_avg() { return average_typing_time; }
 
 void ProbabilityMatrix::update_time(int t) { typing_time.push_back(t); }
 

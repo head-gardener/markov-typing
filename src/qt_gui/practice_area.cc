@@ -5,6 +5,8 @@
 #include "../io.hh"
 #include "../utils.hh"
 
+#define SENTENCE 40
+
 PracticeArea::PracticeArea(QWidget *parent) : QTextEdit(parent) {
     font = QFont{"IBM Plex Mono", 14};
 
@@ -43,8 +45,10 @@ void PracticeArea::keyPressEvent(QKeyEvent *e) {
         if (errors && e->key() != Qt::Key_Backspace)
             return;
 
-        if (!errors)
+        if (!errors) {
+            new_sentence();
             return;
+        }
     }
 
     // now disable enter since it has no use anymore
@@ -54,9 +58,10 @@ void PracticeArea::keyPressEvent(QKeyEvent *e) {
     if (cursor_pos == 0)
         timer.start();
 
+    auto time = timer.elapsed();
     auto helper = [&](auto &mat, bool val) {
         mat.update_element(cursor.block().text().at(cursor_pos - 1).unicode(),
-                           e->text().front().unicode(), timer.elapsed(), val);
+                           e->text().front().unicode(), time, val);
     };
 
     if (e->key() == Qt::Key_Backspace) {
@@ -105,6 +110,8 @@ void PracticeArea::new_sentence() {
     errors_vec.clear();
     update_errors();
 
+    cpm_updated();
+
     json_data.update(matrix);
 }
 
@@ -112,11 +119,11 @@ void PracticeArea::update_errors() {
     const int tmp = std::accumulate(errors_vec.begin(), errors_vec.end(), 0);
     if (errors != tmp) {
         errors = tmp;
-        errors_updated();
     }
 }
 
 int PracticeArea::get_errors() { return errors; }
+int PracticeArea::get_avg() { return matrix.get_avg(); }
 
 void PracticeArea::mousePressEvent(QMouseEvent *) {}
 void PracticeArea::mouseDoubleClickEvent(QMouseEvent *) {}

@@ -51,6 +51,7 @@ public:
     QString generate_sentence(int);
     double proficiency();
     std::size_t size();
+    long get_avg();
 };
 
 void to_json(nlohmann::json &, const ProbabilityMatrix &);
